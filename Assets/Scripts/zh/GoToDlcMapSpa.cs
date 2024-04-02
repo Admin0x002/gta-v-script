@@ -13,8 +13,8 @@ namespace GoToDlcMapSpa
     public class GoToDlcMapSpa : Script
     {
         private string modName = "飞往 斯帕-弗朗科尔尚赛道"; // 模块名称
-        private Vector3 teleportMarkerPos = new Vector3(-1042.0f, -2532.0f, 13.0f); // 传送标记位置
-        private Vector3 teleportToPos = new Vector3(482.0f, 9883.0f, 219.0f); // 传送目标位置
+        private Vector3 teleportMarkerPos = new Vector3(-1042.0f, -2532.0f, 12.7f); // 传送标记位置
+        private Vector3 teleportToPos = new Vector3(482.0f, 9883.0f, 218.40f); // 传送目标位置
         private Blip teleportBlip; // 传送标记
         private bool atTeleportMarker = false; // 是否在传送标记位置
 
@@ -59,29 +59,52 @@ namespace GoToDlcMapSpa
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.T && atTeleportMarker)
+            //            if ((e.KeyCode == Keys.T || Game.IsControlJustPressed(0, GTA.Control.Context)) && atTeleportMarker)
+            if (e.KeyCode == Keys.T && (World.GetDistance(Game.Player.Character.Position, teleportMarkerPos) < 5))
             {
-                Ped playerPed = Game.Player.Character;
-                if (playerPed.IsInVehicle())
+                if (Game.Player.Character.IsInVehicle())
                 {
                     // 如果玩家在车辆中，传送车辆到目标位置
                     Game.FadeScreenOut(200);
                     Script.Wait(500);
-                    playerPed.CurrentVehicle.Position = teleportToPos;
-                    playerPed.Heading = 135.28f;
+                    Game.Player.Character.CurrentVehicle.Position = teleportToPos;
+                    Game.Player.Character.Heading = 135.28f;
                     Script.Wait(500);
                     Game.FadeScreenIn(200);
                 }
                 else
                 {
-                    // 如果玩家不在车辆中，传送玩家到目标位置
-                    playerPed.FreezePosition = true;
+                    Game.Player.Character.FreezePosition = true;
                     Game.FadeScreenOut(200);
                     Script.Wait(500);
-                    playerPed.Position = teleportToPos;
-                    playerPed.FreezePosition = false;
+                    Game.Player.Character.Position = teleportToPos;
+                    Game.Player.Character.FreezePosition = false;
                     Script.Wait(500);
                     Game.FadeScreenIn(200);
+                }
+            }
+            else if (e.KeyCode == Keys.T && (World.GetDistance(Game.Player.Character.Position, teleportToPos) < 5))
+            {
+                if (Game.Player.Character.IsInVehicle())
+                {
+                    // 如果玩家在车辆中，传送车辆到目标位置
+                    Game.FadeScreenOut(200);
+                    Script.Wait(500);
+                    Game.Player.Character.CurrentVehicle.Position = teleportMarkerPos;
+                    Game.Player.Character.Heading = 148.89f;
+                    Script.Wait(500);
+                    Game.FadeScreenIn(200);
+                }
+                else
+                {
+                    Game.Player.Character.FreezePosition = true;
+                    Game.FadeScreenOut(200);
+                    Script.Wait(500);
+                    Game.Player.Character.Position = teleportMarkerPos;
+                    Game.Player.Character.FreezePosition = false;
+                    Script.Wait(500);
+                    Game.FadeScreenIn(200);
+                    Game.Player.WantedLevel = 0;
                 }
             }
         }
