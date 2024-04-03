@@ -14,9 +14,9 @@ namespace GoToDlcMapBarcelona
     {
         private string modName = "Teleporting to Barcelona Catalunya Circuit";
         // Airport location
-        private Vector3 teleportMarkerPos = new Vector3(-1042.0f, -2532.0f, 13.0f);
+        private Vector3 teleportMarkerPos = new Vector3(-1054.95f, -2551.87f, 12.70f);
         // Triple map location
-        private Vector3 teleportToPos = new Vector3(7347.0f, 2432.0f, 82.0f);
+        private Vector3 teleportToPos = new Vector3(7347.0f, 2432.0f, 81.20f);
         private Blip teleportBlip;
         private bool atTeleportMarker = false;
 
@@ -58,27 +58,49 @@ namespace GoToDlcMapBarcelona
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.T && atTeleportMarker)
+            if (e.KeyCode == Keys.T && (World.GetDistance(Game.Player.Character.Position, teleportMarkerPos) < 5))
             {
-                Ped playerPed = Game.Player.Character;
-                if (playerPed.IsInVehicle())
+                if (Game.Player.Character.IsInVehicle())
                 {
                     Game.FadeScreenOut(200);
                     Script.Wait(500);
-                    playerPed.CurrentVehicle.Position = teleportToPos;
-                    playerPed.Heading = 135.28f;
+                    Game.Player.Character.CurrentVehicle.Position = teleportToPos;
+                    Game.Player.Character.Heading = 135.28f;
                     Script.Wait(500);
                     Game.FadeScreenIn(200);
                 }
                 else
                 {
-                    playerPed.FreezePosition = true;
+                    Game.Player.Character.FreezePosition = true;
                     Game.FadeScreenOut(200);
                     Script.Wait(500);
-                    playerPed.Position = teleportToPos;
-                    playerPed.FreezePosition = false;
+                    Game.Player.Character.Position = teleportToPos;
+                    Game.Player.Character.FreezePosition = false;
                     Script.Wait(500);
                     Game.FadeScreenIn(200);
+                }
+            }
+            else if (e.KeyCode == Keys.T && (World.GetDistance(Game.Player.Character.Position, teleportToPos) < 5))
+            {
+                if (Game.Player.Character.IsInVehicle())
+                {
+                    Game.FadeScreenOut(200);
+                    Script.Wait(500);
+                    Game.Player.Character.CurrentVehicle.Position = teleportMarkerPos;
+                    Game.Player.Character.Heading = 148.89f;
+                    Script.Wait(500);
+                    Game.FadeScreenIn(200);
+                }
+                else
+                {
+                    Game.Player.Character.FreezePosition = true;
+                    Game.FadeScreenOut(200);
+                    Script.Wait(500);
+                    Game.Player.Character.Position = teleportMarkerPos;
+                    Game.Player.Character.FreezePosition = false;
+                    Script.Wait(500);
+                    Game.FadeScreenIn(200);
+                    Game.Player.WantedLevel = 0;
                 }
             }
         }
